@@ -6,8 +6,13 @@ public class OceanBoard : MonoBehaviour
 
     public int size = 5;
 
+    private Cell[,] cells;
+
+
     void Start()
     {
+        cells = new Cell[size, size];
+
         CreateGrid();
     }
 
@@ -26,15 +31,40 @@ public class OceanBoard : MonoBehaviour
 
 
                 GameObject cellObject =
-                    Instantiate(cellPrefab, position, Quaternion.identity, transform);
+                    Instantiate(
+                        cellPrefab,
+                        position,
+                        Quaternion.identity,
+                        transform
+                    );
 
 
-                string letter = ((char)('A' + row)).ToString();
-                string number = (col + 1).ToString();
+                string coordinate =
+                    ((char)('A' + row)).ToString()
+                    + (col + 1);
 
-                cellObject.GetComponent<Cell>()
-                    .SetCoordinate(letter + number);
+
+                Cell cell =
+                    cellObject.GetComponent<Cell>();
+
+
+                cell.SetCoordinate(coordinate);
+
+
+                cells[row, col] = cell;
             }
         }
+    }
+
+
+    public Cell GetCell(string coordinate)
+    {
+        foreach(Cell cell in cells)
+        {
+            if(cell.coordinate == coordinate)
+                return cell;
+        }
+
+        return null;
     }
 }

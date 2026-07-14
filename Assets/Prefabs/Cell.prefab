@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: a395183d60ac01b48a2cbd23b05656a7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,4 +127,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Cell
   coordinate: 
   hasShip: 0
-  alreadyHit: 0
+  alreadyShot: 0
+  isHit: 0
