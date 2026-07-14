@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class OceanBoard : MonoBehaviour
@@ -8,12 +9,17 @@ public class OceanBoard : MonoBehaviour
 
     private Cell[,] cells;
 
+    public List<Ship> ships = new List<Ship>();
+
 
     void Start()
     {
         cells = new Cell[size, size];
 
         CreateGrid();
+
+        PlaceShip("A1", Direction.Horizontal, 3);
+        PlaceShip("D4", Direction.Horizontal, 2);
     }
 
 
@@ -67,4 +73,78 @@ public class OceanBoard : MonoBehaviour
 
         return null;
     }
+
+
+public bool PlaceShip(string startCoordinate, Direction direction, int shipSize)
+{
+    Cell startCell = GetCell(startCoordinate);
+
+    if(startCell == null)
+    {
+        return false;
+    }
+
+
+    List<Cell> shipCells = new List<Cell>();
+
+
+    int startRow = startCoordinate[0] - 'A';
+    int startCol = int.Parse(startCoordinate[1].ToString()) - 1;
+
+
+    for(int i = 0; i < shipSize; i++)
+    {
+        int row = startRow;
+        int col = startCol;
+
+
+        if(direction == Direction.Horizontal)
+        {
+            col += i;
+        }
+        else
+        {
+            row += i;
+        }
+
+
+        if(row >= size || col >= size)
+        {
+            return false;
+        }
+
+
+        Cell cell = cells[row, col];
+
+
+        if(cell.hasShip)
+        {
+            return false;
+        }
+
+
+        shipCells.Add(cell);
+    }
+
+
+foreach(Cell cell in shipCells)
+{
+    cell.hasShip = true;
+}
+
+
+Ship ship = new Ship(
+    "Destroyer",
+    shipSize
+);
+
+
+ship.positions = shipCells;
+
+
+ships.Add(ship);
+
+
+return true;
+}
 }
