@@ -1,3 +1,4 @@
+# Unity generated folders
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
@@ -5,4 +6,32 @@
 [Bb]uilds/
 [Ll]ogs/
 UserSettings/
+
+# IDE generated files
 .vs/
+.vscode/
+.idea/
+
+# Unity generated solution/project files
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.opendb
+
+# Unity crash/debug files
+*.apk
+*.aab
+*_BurstDebugInformation_DoNotShip/
+
+# Temporary files
+.utmp/
+
+# OS generated files
+.DS_Store
+Thumbs.db
