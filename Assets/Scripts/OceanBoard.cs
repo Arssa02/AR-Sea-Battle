@@ -12,17 +12,18 @@ public class OceanBoard : MonoBehaviour
     public Player player;
 
 
-    void Start()
-    {
-        cells = new Cell[size, size];
+void Start()
+{
+    InitializeBoard();
+}
 
-        CreateGrid();
 
-        player = new Player("Player 1");
+public void InitializeBoard()
+{
+    cells = new Cell[size, size];
 
-        PlaceShip("A1", Direction.Horizontal, 3);
-        PlaceShip("D4", Direction.Horizontal, 2);
-    }
+    CreateGrid();
+}
 
 
     void CreateGrid()
