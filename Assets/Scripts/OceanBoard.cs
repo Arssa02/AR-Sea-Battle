@@ -9,7 +9,7 @@ public class OceanBoard : MonoBehaviour
 
     private Cell[,] cells;
 
-    public List<Ship> ships = new List<Ship>();
+    public Player player;
 
 
     void Start()
@@ -17,6 +17,8 @@ public class OceanBoard : MonoBehaviour
         cells = new Cell[size, size];
 
         CreateGrid();
+
+        player = new Player("Player 1");
 
         PlaceShip("A1", Direction.Horizontal, 3);
         PlaceShip("D4", Direction.Horizontal, 2);
@@ -142,7 +144,10 @@ Ship ship = new Ship(
 ship.positions = shipCells;
 
 
-ships.Add(ship);
+if(player != null)
+{
+    player.ships.Add(ship);
+}
 
 
 return true;
