@@ -78,7 +78,7 @@ public void InitializeBoard()
     }
 
 
-public bool PlaceShip(string startCoordinate, Direction direction, int shipSize)
+public bool PlaceShip(string startCoordinate, Direction direction, int shipSize, string shipName)
 {
     Cell startCell = GetCell(startCoordinate);
 
@@ -137,7 +137,7 @@ foreach(Cell cell in shipCells)
 
 
 Ship ship = new Ship(
-    "Destroyer",
+    shipName,
     shipSize
 );
 

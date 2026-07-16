@@ -10,6 +10,20 @@ public class GameManager : MonoBehaviour
 
     public GameState currentState;
 
+    private int currentShipIndex = 0;
+
+    private readonly string[] shipNames = 
+    {
+        "Destroyer",
+        "Patrol Boat"
+    };
+
+    private readonly int[] shipSizes = 
+    {
+        3,
+        2
+    };
+
 
     void Start()
     {
@@ -35,19 +49,6 @@ public class GameManager : MonoBehaviour
         player2Board.InitializeBoard();
 
 
-        PlaceShipForCurrentPlayer(
-            "A1",
-            Direction.Horizontal,
-            3
-        );
-
-        PlaceShipForCurrentPlayer(
-            "D4",
-            Direction.Horizontal,
-            2
-        );
-
-
         currentState = GameState.Player1Placement;
 
 
@@ -56,39 +57,12 @@ public class GameManager : MonoBehaviour
     }
 
 
-    void PlaceInitialShips()
-    {
-        player1.board.PlaceShip(
-            "A1",
-            Direction.Horizontal,
-            3
-        );
-
-        player1.board.PlaceShip(
-            "D4",
-            Direction.Horizontal,
-            2
-        );
-
-
-        player2.board.PlaceShip(
-            "B2",
-            Direction.Horizontal,
-            3
-        );
-
-        player2.board.PlaceShip(
-            "E1",
-            Direction.Horizontal,
-            2
-        );
-    }
-
     public bool PlaceShipForCurrentPlayer(
     string startCoordinate,
     Direction direction,
-    int shipSize)
-{
+    int shipSize,
+    string shipName)
+    {
     Player currentPlayer =
         currentState == GameState.Player1Placement
         ? player1
@@ -97,7 +71,22 @@ public class GameManager : MonoBehaviour
     return currentPlayer.board.PlaceShip(
         startCoordinate,
         direction,
-        shipSize
+        shipSize,
+        shipName
     );
-}
+    }
+    public int GetCurrentShipSize()
+    {
+        return shipSizes[currentShipIndex];
+    }
+
+    public string GetCurrentShipName()
+    {
+        return shipNames[currentShipIndex];
+    
+    }
+    public void NextShip()
+    {
+        currentShipIndex++;
+    }
 }
