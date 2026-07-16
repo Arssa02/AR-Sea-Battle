@@ -35,7 +35,17 @@ public class GameManager : MonoBehaviour
         player2Board.InitializeBoard();
 
 
-        PlaceInitialShips();
+        PlaceShipForCurrentPlayer(
+            "A1",
+            Direction.Horizontal,
+            3
+        );
+
+        PlaceShipForCurrentPlayer(
+            "D4",
+            Direction.Horizontal,
+            2
+        );
 
 
         currentState = GameState.Player1Placement;
@@ -73,4 +83,21 @@ public class GameManager : MonoBehaviour
             2
         );
     }
+
+    public bool PlaceShipForCurrentPlayer(
+    string startCoordinate,
+    Direction direction,
+    int shipSize)
+{
+    Player currentPlayer =
+        currentState == GameState.Player1Placement
+        ? player1
+        : player2;
+
+    return currentPlayer.board.PlaceShip(
+        startCoordinate,
+        direction,
+        shipSize
+    );
+}
 }
