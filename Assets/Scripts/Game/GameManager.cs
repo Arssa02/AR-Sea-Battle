@@ -12,13 +12,13 @@ public class GameManager : MonoBehaviour
 
     private int currentShipIndex = 0;
 
-    private readonly string[] shipNames = 
+    private readonly string[] shipNames =
     {
         "Destroyer",
         "Patrol Boat"
     };
 
-    private readonly int[] shipSizes = 
+    private readonly int[] shipSizes =
     {
         3,
         2
@@ -44,11 +44,6 @@ public class GameManager : MonoBehaviour
         player1Board.player = player1;
         player2Board.player = player2;
 
-
-        player1Board.InitializeBoard();
-        player2Board.InitializeBoard();
-
-
         currentState = GameState.Player1Placement;
 
 
@@ -63,17 +58,17 @@ public class GameManager : MonoBehaviour
     int shipSize,
     string shipName)
     {
-    Player currentPlayer =
-        currentState == GameState.Player1Placement
-        ? player1
-        : player2;
+        Player currentPlayer =
+            currentState == GameState.Player1Placement
+            ? player1
+            : player2;
 
-    return currentPlayer.board.PlaceShip(
-        startCoordinate,
-        direction,
-        shipSize,
-        shipName
-    );
+        return currentPlayer.board.PlaceShip(
+            startCoordinate,
+            direction,
+            shipSize,
+            shipName
+        );
     }
     public int GetCurrentShipSize()
     {
@@ -83,7 +78,7 @@ public class GameManager : MonoBehaviour
     public string GetCurrentShipName()
     {
         return shipNames[currentShipIndex];
-    
+
     }
     public void NextShip()
     {

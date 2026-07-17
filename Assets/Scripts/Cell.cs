@@ -7,10 +7,23 @@ public class Cell : MonoBehaviour
     public bool hasShip = false;
     public bool alreadyShot = false;
     public bool isHit = false;
+    public Renderer cellRenderer;
 
+  void Awake()
+    {
+        cellRenderer = GetComponent<Renderer>();
+    }
+    
     public void SetCoordinate(string coord)
     {
         coordinate = coord;
         gameObject.name = "Cell_" + coordinate;
+    }
+
+    public void SetShip()
+    {
+        hasShip = true;
+
+        cellRenderer.material.color = Color.green;
     }
 }

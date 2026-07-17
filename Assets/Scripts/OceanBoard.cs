@@ -13,18 +13,19 @@ public class OceanBoard : MonoBehaviour
 
     public Player player;
 
-
-void Start()
-{
-    InitializeBoard();
-}
+    private bool boardCreated = false;
 
 
 public void InitializeBoard()
 {
+    if(boardCreated)
+        return;
+
     cells = new Cell[size, size];
 
     CreateGrid();
+
+    boardCreated = true;
 }
 
 
@@ -137,7 +138,7 @@ public bool PlaceShip(string startCoordinate, Direction direction, int shipSize,
 
 foreach(Cell cell in shipCells)
 {
-    cell.hasShip = true;
+    cell.SetShip();
 }
 
 
