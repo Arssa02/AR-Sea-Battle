@@ -5,6 +5,8 @@ public class OceanBoard : MonoBehaviour
 {
     public GameObject cellPrefab;
 
+    public float cellSpacing=0.1f;
+
     public int size = 5;
 
     private Cell[,] cells;
@@ -32,10 +34,13 @@ public void InitializeBoard()
         {
             for(int col = 0; col < size; col++)
             {
-                Vector3 position = new Vector3(
-                    col,
+                float offset = (size - 1) * cellSpacing / 2f;
+
+                Vector3 position = new Vector3 (
+                    col * cellSpacing - offset, 
                     0,
-                    -row
+                    -row * cellSpacing + offset 
+                
                 );
 
 
@@ -81,7 +86,7 @@ public void InitializeBoard()
 public bool PlaceShip(string startCoordinate, Direction direction, int shipSize, string shipName)
 {
     Cell startCell = GetCell(startCoordinate);
-
+ 
     if(startCell == null)
     {
         return false;
