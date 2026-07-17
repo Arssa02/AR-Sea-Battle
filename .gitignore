@@ -37,3 +37,5 @@ UserSettings/
 Thumbs.db
 
 *_BackUpThisFolder_ButDontShipItWithYourGame/
+
+Packages/*.tgz
