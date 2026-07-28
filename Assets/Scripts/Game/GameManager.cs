@@ -52,24 +52,54 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public bool PlaceShipForCurrentPlayer(
+public bool PlaceShipForCurrentPlayer(
     string startCoordinate,
     Direction direction,
     int shipSize,
     string shipName)
-    {
-        Player currentPlayer =
-            currentState == GameState.Player1Placement
-            ? player1
-            : player2;
+{
+    Player currentPlayer;
 
-        return currentPlayer.board.PlaceShip(
-            startCoordinate,
-            direction,
-            shipSize,
-            shipName
-        );
+    if (currentState == GameState.Player1Placement)
+    {
+        currentPlayer = player1;
     }
+    else if (currentState == GameState.Player2Placement)
+    {
+        currentPlayer = player2;
+    }
+    else
+    {
+        Debug.LogWarning(
+            "Ships cannot be placed during state: " + currentState
+        );
+
+        return false;
+    }
+
+    if (currentPlayer == null || currentPlayer.board == null)
+    {
+        Debug.LogError("Current player or board is not configured.");
+        return false;
+    }
+
+    if (!currentPlayer.board.IsInitialized)
+    {
+        Debug.LogWarning(
+            currentPlayer.playerName +
+            "'s marker must be scanned before placing a ship."
+        );
+
+        return false;
+    }
+
+    return currentPlayer.board.PlaceShip(
+        startCoordinate,
+        direction,
+        shipSize,
+        shipName
+    );
+}
     public int GetCurrentShipSize()
     {
         return shipSizes[currentShipIndex];
@@ -83,5 +113,21 @@ public class GameManager : MonoBehaviour
     public void NextShip()
     {
         currentShipIndex++;
+
+        if (currentShipIndex < shipSizes.Length)
+            return;
+
+        currentShipIndex = 0;
+
+        if (currentState == GameState.Player1Placement)
+        {
+            currentState = GameState.Player2Placement;
+            Debug.Log("Player 2 can now place ships.");
+        }
+        else if (currentState == GameState.Player2Placement)
+        {
+            currentState = GameState.Player1Turn;
+            Debug.Log("Placement finished. Player 1 starts.");
+        }
     }
 }

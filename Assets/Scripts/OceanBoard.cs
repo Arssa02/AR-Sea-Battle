@@ -5,7 +5,7 @@ public class OceanBoard : MonoBehaviour
 {
     public GameObject cellPrefab;
 
-    public float cellSpacing=0.1f;
+    public float cellSpacing = 0.1f;
 
     public int size = 5;
 
@@ -16,32 +16,32 @@ public class OceanBoard : MonoBehaviour
     private bool boardCreated = false;
 
 
-public void InitializeBoard()
-{
-    if(boardCreated)
-        return;
+    public void InitializeBoard()
+    {
+        if (boardCreated)
+            return;
 
-    cells = new Cell[size, size];
+        cells = new Cell[size, size];
 
-    CreateGrid();
+        CreateGrid();
 
-    boardCreated = true;
-}
+        boardCreated = true;
+    }
 
 
     void CreateGrid()
     {
-        for(int row = 0; row < size; row++)
+        for (int row = 0; row < size; row++)
         {
-            for(int col = 0; col < size; col++)
+            for (int col = 0; col < size; col++)
             {
                 float offset = (size - 1) * cellSpacing / 2f;
 
-                Vector3 position = new Vector3 (
-                    col * cellSpacing - offset, 
+                Vector3 position = new Vector3(
+                    col * cellSpacing - offset,
                     0,
-                    -row * cellSpacing + offset 
-                
+                    -row * cellSpacing + offset
+
                 );
 
 
@@ -74,89 +74,106 @@ public void InitializeBoard()
 
     public Cell GetCell(string coordinate)
     {
-        foreach(Cell cell in cells)
+        if (cells == null)
         {
-            if(cell.coordinate == coordinate)
+            return null;
+        }
+
+        foreach (Cell cell in cells)
+        {
+            if (cell.coordinate == coordinate)
+            {
                 return cell;
+            }
         }
 
         return null;
     }
 
 
-public bool PlaceShip(string startCoordinate, Direction direction, int shipSize, string shipName)
-{
-    Cell startCell = GetCell(startCoordinate);
- 
-    if(startCell == null)
+    public bool PlaceShip(string startCoordinate, Direction direction, int shipSize, string shipName)
     {
-        return false;
-    }
+        Cell startCell = GetCell(startCoordinate);
 
-
-    List<Cell> shipCells = new List<Cell>();
-
-
-    int startRow = startCoordinate[0] - 'A';
-    int startCol = int.Parse(startCoordinate[1].ToString()) - 1;
-
-
-    for(int i = 0; i < shipSize; i++)
-    {
-        int row = startRow;
-        int col = startCol;
-
-
-        if(direction == Direction.Horizontal)
-        {
-            col += i;
-        }
-        else
-        {
-            row += i;
-        }
-
-
-        if(row >= size || col >= size)
+        if (startCell == null)
         {
             return false;
         }
 
 
-        Cell cell = cells[row, col];
+        List<Cell> shipCells = new List<Cell>();
 
 
-        if(cell.hasShip)
+        int startRow = startCoordinate[0] - 'A';
+        int startCol = int.Parse(startCoordinate[1].ToString()) - 1;
+
+
+        for (int i = 0; i < shipSize; i++)
         {
-            return false;
+            int row = startRow;
+            int col = startCol;
+
+
+            if (direction == Direction.Horizontal)
+            {
+                col += i;
+            }
+            else
+            {
+                row += i;
+            }
+
+
+            if (row >= size || col >= size)
+            {
+                return false;
+            }
+
+
+            Cell cell = cells[row, col];
+
+
+            if (cell.hasShip)
+            {
+                return false;
+            }
+
+
+            shipCells.Add(cell);
         }
 
 
-        shipCells.Add(cell);
+        foreach (Cell cell in shipCells)
+        {
+            cell.SetShip();
+        }
+
+
+        Ship ship = new Ship(
+            shipName,
+            shipSize
+        );
+
+
+        ship.positions = shipCells;
+
+
+        if (player != null)
+        {
+            player.ships.Add(ship);
+        }
+
+        return true;
     }
 
+    
 
-foreach(Cell cell in shipCells)
-{
-    cell.SetShip();
-}
+    public bool IsInitialized
+    {
+        get
+        {
+            return boardCreated && cells != null;
+        }
+    }
 
-
-Ship ship = new Ship(
-    shipName,
-    shipSize
-);
-
-
-ship.positions = shipCells;
-
-
-if(player != null)
-{
-    player.ships.Add(ship);
-}
-
-
-return true;
-}
 }
