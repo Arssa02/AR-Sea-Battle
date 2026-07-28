@@ -9,11 +9,11 @@ public class Cell : MonoBehaviour
     public bool isHit = false;
     public Renderer cellRenderer;
 
-  void Awake()
+    void Awake()
     {
         cellRenderer = GetComponent<Renderer>();
     }
-    
+
     public void SetCoordinate(string coord)
     {
         coordinate = coord;
@@ -26,4 +26,16 @@ public class Cell : MonoBehaviour
 
         cellRenderer.material.color = Color.green;
     }
+
+    public void SetHit()
+    {
+        isHit = true;
+        cellRenderer.material.color = Color.red;
+    }
+
+    public void SetMiss()
+    {
+        cellRenderer.material.color = Color.gray;
+    }
+
 }

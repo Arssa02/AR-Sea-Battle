@@ -30,7 +30,7 @@ public class PlacementUI : MonoBehaviour
             );
 
 
-        if(placed)
+        if (placed)
         {
             gameManager.NextShip();
         }
@@ -38,4 +38,17 @@ public class PlacementUI : MonoBehaviour
 
         Debug.Log("Ship placed: " + placed);
     }
+
+    public void Shoot()
+    {
+        string coordinate =
+            letterDropdown.options[letterDropdown.value].text +
+            numberDropdown.options[numberDropdown.value].text;
+
+        ShotResult result =
+            gameManager.ShootForCurrentPlayer(coordinate);
+
+        Debug.Log("Shot result: " + result);
+    }
+
 }

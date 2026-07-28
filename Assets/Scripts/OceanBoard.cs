@@ -166,7 +166,61 @@ public class OceanBoard : MonoBehaviour
         return true;
     }
 
-    
+    public ShotResult Shoot(string coordinate)
+    {
+        Cell cell = GetCell(coordinate);
+
+        if (cell == null)
+        {
+            return ShotResult.Invalid;
+        }
+
+        if (cell.alreadyShot)
+        {
+            return ShotResult.AlreadyShot;
+        }
+
+        cell.alreadyShot = true;
+
+        if (cell.hasShip)
+        {
+            cell.isHit = true;
+            cell.SetHit();
+
+            DamageShipAtCell(cell);
+
+            return ShotResult.Hit;
+        }
+
+        cell.SetMiss();
+
+        return ShotResult.Miss;
+    }
+
+    private void DamageShipAtCell(Cell hitCell)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        foreach (Ship ship in player.ships)
+        {
+            if (ship.positions.Contains(hitCell))
+            {
+                ship.health--;
+
+                if (ship.IsSunk())
+                {
+                    Debug.Log(ship.shipName + " was sunk.");
+                }
+
+                return;
+            }
+        }
+    }
+
+
 
     public bool IsInitialized
     {
