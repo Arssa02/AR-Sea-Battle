@@ -181,6 +181,18 @@ public class GameManager : MonoBehaviour
             result
         );
 
+        if (result == ShotResult.Hit)
+        {
+            if (defendingPlayer.AllShipsSunk())
+            {
+                currentState = GameState.GameOver;
+
+                Debug.Log(attackingPlayer.playerName + " wins!");
+
+                return result;
+            }
+        }
+
         if (result == ShotResult.Hit || result == ShotResult.Miss)
         {
             SwitchTurn();
