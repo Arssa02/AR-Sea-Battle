@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     public GameState currentState;
 
+    public GameUI gameUI;
     private int currentShipIndex = 0;
 
     private readonly string[] shipNames =
@@ -115,19 +116,40 @@ public class GameManager : MonoBehaviour
         currentShipIndex++;
 
         if (currentShipIndex < shipSizes.Length)
+        {
             return;
+        }
 
         currentShipIndex = 0;
 
         if (currentState == GameState.Player1Placement)
         {
-            currentState = GameState.Player2Placement;
-            Debug.Log("Player 2 can now place ships.");
+            player1Board.HideShips();
+
+            currentState = GameState.PassToPlayer2;
+
+            gameUI.ShowPassPhonePanel(
+                "Player 1 has finished placing ships.\n\n" +
+                "Pass the phone to Player 2.\n\n" +
+                "When Player 2 is ready, press Continue."
+            );
+
+            Debug.Log("Waiting to pass the phone to Player 2.");
         }
         else if (currentState == GameState.Player2Placement)
         {
-            currentState = GameState.Player1Turn;
-            Debug.Log("Placement finished. Player 1 starts.");
+            player2Board.HideShips();
+
+            currentState = GameState.PassToPlayer1;
+
+            gameUI.ShowPassPhonePanel(
+                "Player 2 has finished placing ships.\n\n" +
+                "Exchange your physical board markers.\n\n" +
+                "Pass the phone back to Player 1.\n\n" +
+                "Press Continue to begin the battle."
+            );
+
+            Debug.Log("Waiting to begin the battle.");
         }
     }
 
@@ -214,4 +236,32 @@ public class GameManager : MonoBehaviour
             Debug.Log("Player 1's turn.");
         }
     }
+
+    public void ContinueAfterPass()
+    {
+        if (currentState == GameState.PassToPlayer2)
+        {
+            currentState = GameState.Player2Placement;
+
+            gameUI.HidePassPhonePanel();
+
+            Debug.Log("Player 2 can now place ships.");
+        }
+        else if (currentState == GameState.PassToPlayer1)
+        {
+            currentState = GameState.Player1Turn;
+
+            gameUI.HidePassPhonePanel();
+
+            Debug.Log("Placement finished. Player 1 starts.");
+            Debug.Log("Player 1 should scan Player 2's marker.");
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Continue cannot be used during state: " + currentState
+            );
+        }
+    }
+
 }

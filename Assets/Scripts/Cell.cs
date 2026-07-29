@@ -9,9 +9,12 @@ public class Cell : MonoBehaviour
     public bool isHit = false;
     public Renderer cellRenderer;
 
-    void Awake()
+    private Color waterColor;
+
+    private void Awake()
     {
         cellRenderer = GetComponent<Renderer>();
+        waterColor = cellRenderer.material.color;
     }
 
     public void SetCoordinate(string coord)
@@ -36,6 +39,22 @@ public class Cell : MonoBehaviour
     public void SetMiss()
     {
         cellRenderer.material.color = Color.gray;
+    }
+
+    public void ShowShip()
+    {
+        if (hasShip)
+        {
+            cellRenderer.material.color = Color.green;
+        }
+    }
+
+    public void HideShip()
+    {
+        if (hasShip && !isHit)
+        {
+            cellRenderer.material.color = waterColor;
+        }
     }
 
 }

@@ -230,4 +230,30 @@ public class OceanBoard : MonoBehaviour
         }
     }
 
+    public void ShowShips()
+    {
+        if (cells == null)
+        {
+            return;
+        }
+
+        foreach (Cell cell in cells)
+        {
+            cell.ShowShip();
+        }
+    }
+
+    public void HideShips()
+    {
+        if (cells == null)
+        {
+            return;
+        }
+
+        foreach (Cell cell in cells)
+        {
+            cell.HideShip();
+        }
+    }
+
 }
