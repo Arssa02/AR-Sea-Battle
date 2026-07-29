@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class OceanBoard : MonoBehaviour
 {
     public GameObject cellPrefab;
+
+    public GameObject labelPrefab;
 
     public float cellSpacing = 0.1f;
 
@@ -15,7 +18,7 @@ public class OceanBoard : MonoBehaviour
 
     private bool boardCreated = false;
 
-public string LastSunkShipName { get; private set; }
+    public string LastSunkShipName { get; private set; }
 
     public void InitializeBoard()
     {
@@ -25,6 +28,7 @@ public string LastSunkShipName { get; private set; }
         cells = new Cell[size, size];
 
         CreateGrid();
+        CreateLabels();
 
         boardCreated = true;
     }
@@ -72,6 +76,74 @@ public string LastSunkShipName { get; private set; }
         }
     }
 
+    private void CreateLabels()
+    {
+        float offset = (size - 1) * cellSpacing / 2f;
+        float labelDistance = cellSpacing * 0.75f;
+
+        // Numbers above columns
+        for (int col = 0; col < size; col++)
+        {
+            Vector3 position = new Vector3(
+                col * cellSpacing - offset,
+                0.01f,
+                offset + labelDistance
+            );
+
+            CreateLabel(
+                (col + 1).ToString(),
+                position,
+                "ColumnLabel_" + (col + 1)
+            );
+        }
+
+        // Letters to the left of rows
+        for (int row = 0; row < size; row++)
+        {
+            string letter = ((char)('A' + row)).ToString();
+
+            Vector3 position = new Vector3(
+                -offset - labelDistance,
+                0.01f,
+                -row * cellSpacing + offset
+            );
+
+            CreateLabel(
+                letter,
+                position,
+                "RowLabel_" + letter
+            );
+        }
+    }
+
+    private void CreateLabel(
+    string labelText,
+    Vector3 position,
+    string objectName)
+{
+    GameObject labelObject = Instantiate(
+        labelPrefab,
+        position,
+        Quaternion.Euler(90f, 0f, 0f),
+        transform
+    );
+
+    labelObject.name = objectName;
+
+    TMP_Text textComponent =
+        labelObject.GetComponent<TMP_Text>();
+
+    if (textComponent != null)
+    {
+        textComponent.text = labelText;
+    }
+    else
+    {
+        Debug.LogError(
+            "Label prefab does not contain a TMP_Text component."
+        );
+    }
+}
 
     public Cell GetCell(string coordinate)
     {
@@ -216,7 +288,7 @@ public string LastSunkShipName { get; private set; }
                 if (ship.IsSunk())
                 {
                     LastSunkShipName = ship.shipName;
-                    
+
                     Debug.Log(ship.shipName + " was sunk.");
                 }
 
