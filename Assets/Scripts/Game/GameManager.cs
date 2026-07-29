@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -311,6 +312,8 @@ public class GameManager : MonoBehaviour
             {
                 currentState = GameState.GameOver;
 
+                gameUI.ShowGameOver(attackingPlayer.playerName);
+
                 Debug.Log(attackingPlayer.playerName + " wins!");
 
                 return result;
@@ -396,6 +399,13 @@ public class GameManager : MonoBehaviour
                 "Continue cannot be used during state: " + currentState
             );
         }
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(
+            SceneManager.GetActiveScene().buildIndex
+        );
     }
 
 }

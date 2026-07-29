@@ -12,6 +12,8 @@ public class GameUI : MonoBehaviour
     public TMP_Text phaseTitle;
     public TMP_Text feedbackText;
 
+    public GameObject gameOverPanel;
+    public TMP_Text winnerText;
     public void ShowPassPhonePanel(string message)
     {
         passMessage.text = message;
@@ -44,6 +46,15 @@ public class GameUI : MonoBehaviour
     public void SetFeedback(string message)
     {
         feedbackText.text = message;
+    }
+
+    public void ShowGameOver(string winnerName)
+    {
+        placementPanel.SetActive(false);
+        passPhonePanel.SetActive(false);
+        gameOverPanel.SetActive(true);
+
+        winnerText.text = winnerName + " WINS!";
     }
 
 
