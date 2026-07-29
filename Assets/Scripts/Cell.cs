@@ -11,6 +11,7 @@ public class Cell : MonoBehaviour
 
     private Color waterColor;
 
+
     private void Awake()
     {
         cellRenderer = GetComponent<Renderer>();

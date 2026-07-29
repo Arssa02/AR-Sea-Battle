@@ -15,6 +15,7 @@ public class OceanBoard : MonoBehaviour
 
     private bool boardCreated = false;
 
+public string LastSunkShipName { get; private set; }
 
     public void InitializeBoard()
     {
@@ -154,7 +155,6 @@ public class OceanBoard : MonoBehaviour
             shipSize
         );
 
-
         ship.positions = shipCells;
 
 
@@ -168,6 +168,9 @@ public class OceanBoard : MonoBehaviour
 
     public ShotResult Shoot(string coordinate)
     {
+
+        LastSunkShipName = null;
+
         Cell cell = GetCell(coordinate);
 
         if (cell == null)
@@ -212,6 +215,8 @@ public class OceanBoard : MonoBehaviour
 
                 if (ship.IsSunk())
                 {
+                    LastSunkShipName = ship.shipName;
+                    
                     Debug.Log(ship.shipName + " was sunk.");
                 }
 

@@ -281,6 +281,8 @@ public class GameManager : MonoBehaviour
 
         ShotResult result = defendingPlayer.board.Shoot(coordinate);
 
+        string sunkShipName = defendingPlayer.board.LastSunkShipName;
+
         if (result == ShotResult.Hit)
         {
             gameUI.SetFeedback("Hit at " + coordinate + "!");
@@ -324,18 +326,33 @@ public class GameManager : MonoBehaviour
 
         if (result == ShotResult.Hit || result == ShotResult.Miss)
         {
-            SwitchTurn(result, coordinate);
+            SwitchTurn(result, coordinate, sunkShipName);
         }
 
         return result;
     }
 
-    private void SwitchTurn(ShotResult result, string coordinate)
+    private void SwitchTurn(ShotResult result, string coordinate, string sunkShipName)
     {
-        string resultMessage =
-            result == ShotResult.Hit
-            ? "Hit at " + coordinate + "!"
-            : "Miss at " + coordinate + ".";
+        string resultMessage;
+
+        if (!string.IsNullOrEmpty(sunkShipName))
+        {
+            resultMessage =
+                "Hit at " +
+                coordinate +
+                "!\n" +
+                sunkShipName +
+                " sunk!";
+        }
+        else if (result == ShotResult.Hit)
+        {
+            resultMessage = "Hit at " + coordinate + "!";
+        }
+        else
+        {
+            resultMessage = "Miss at " + coordinate + ".";
+        }
 
         if (currentState == GameState.Player1Turn)
         {
