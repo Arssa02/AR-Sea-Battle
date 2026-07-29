@@ -906,6 +906,9 @@ MonoBehaviour:
   feedbackText: {fileID: 1167445527}
   gameOverPanel: {fileID: 1223198284}
   winnerText: {fileID: 1334163021}
+  directionDropdown: {fileID: 1997406714}
+  placeButton: {fileID: 1228816064}
+  shootButton: {fileID: 741544891}
 --- !u!1 &436665165
 GameObject:
   m_ObjectHideFlags: 0

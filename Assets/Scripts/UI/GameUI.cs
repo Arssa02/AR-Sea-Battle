@@ -14,6 +14,10 @@ public class GameUI : MonoBehaviour
 
     public GameObject gameOverPanel;
     public TMP_Text winnerText;
+
+    public GameObject directionDropdown;
+    public GameObject placeButton;
+    public GameObject shootButton;
     public void ShowPassPhonePanel(string message)
     {
         passMessage.text = message;
@@ -50,11 +54,37 @@ public class GameUI : MonoBehaviour
 
     public void ShowGameOver(string winnerName)
     {
+
+        HideActionControls();
+
         placementPanel.SetActive(false);
         passPhonePanel.SetActive(false);
         gameOverPanel.SetActive(true);
 
         winnerText.text = winnerName + " WINS!";
+    }
+
+    public void ShowPlacementControls()
+    {
+        directionDropdown.SetActive(true);
+        placeButton.SetActive(true);
+        shootButton.SetActive(false);
+    }
+
+    public void ShowBattleControls()
+    {
+        Debug.Log("Switching UI to battle controls");
+        
+        directionDropdown.SetActive(false);
+        placeButton.SetActive(false);
+        shootButton.SetActive(true);
+    }
+
+    public void HideActionControls()
+    {
+        directionDropdown.SetActive(false);
+        placeButton.SetActive(false);
+        shootButton.SetActive(false);
     }
 
 

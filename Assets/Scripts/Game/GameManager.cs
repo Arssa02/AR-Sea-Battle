@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
             GetCurrentShipSize() +
             ")."
         );
+
+        gameUI.ShowPlacementControls();
     }
 
 
@@ -369,6 +371,7 @@ public class GameManager : MonoBehaviour
             currentState = GameState.Player2Placement;
 
             gameUI.HidePassPhonePanel();
+            gameUI.ShowPlacementControls();
 
             gameUI.SetPhaseTitle("PLAYER 2 PLACEMENT");
 
@@ -387,6 +390,7 @@ public class GameManager : MonoBehaviour
             currentState = GameState.Player1Turn;
 
             gameUI.HidePassPhonePanel();
+            gameUI.ShowBattleControls();
 
             gameUI.SetPhaseTitle("PLAYER 1 TURN");
             gameUI.SetFeedback("Choose a coordinate and shoot.");
