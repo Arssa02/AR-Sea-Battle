@@ -38,5 +38,13 @@ Thumbs.db
 
 *_BackUpThisFolder_ButDontShipItWithYourGame/
 
-Packages/*.tgz
 QCAR/somedata16
+
+# Local Vuforia package archives
+Packages/*.tgz
+Assets/Editor/Migration/*.tgz
+Assets/Editor/Migration/*.tgz.meta
+
+# Temporary recovery folders
+Library_backup/
+vuforia_extract/
