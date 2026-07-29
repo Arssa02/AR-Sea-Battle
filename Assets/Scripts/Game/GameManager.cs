@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,6 +13,10 @@ public class GameManager : MonoBehaviour
 
     public GameUI gameUI;
     private int currentShipIndex = 0;
+    private bool placementTransitionInProgress = false;
+
+    [SerializeField]
+    private float finalShipDisplayDelay = 3f;
 
     private readonly string[] shipNames =
     {
@@ -50,6 +55,16 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("Game started");
         Debug.Log(currentState);
+
+        gameUI.SetPhaseTitle("PLAYER 1 PLACEMENT");
+
+        gameUI.SetFeedback(
+            "Place your " +
+            GetCurrentShipName() +
+            " (size " +
+            GetCurrentShipSize() +
+            ")."
+        );
     }
 
 
@@ -60,6 +75,12 @@ public class GameManager : MonoBehaviour
         string shipName)
     {
         Player currentPlayer;
+
+        if (placementTransitionInProgress)
+        {
+            Debug.LogWarning("Please wait for the placement phase to finish.");
+            return false;
+        }
 
         if (currentState == GameState.Player1Placement)
         {
@@ -117,6 +138,14 @@ public class GameManager : MonoBehaviour
 
         if (currentShipIndex < shipSizes.Length)
         {
+            gameUI.SetFeedback(
+                "Place your " +
+                GetCurrentShipName() +
+                " (size " +
+                GetCurrentShipSize() +
+                ")."
+            );
+
             return;
         }
 
@@ -124,33 +153,87 @@ public class GameManager : MonoBehaviour
 
         if (currentState == GameState.Player1Placement)
         {
-            player1Board.HideShips();
-
-            currentState = GameState.PassToPlayer2;
-
-            gameUI.ShowPassPhonePanel(
-                "Player 1 has finished placing ships.\n\n" +
-                "Pass the phone to Player 2.\n\n" +
-                "When Player 2 is ready, press Continue."
-            );
-
-            Debug.Log("Waiting to pass the phone to Player 2.");
+            StartCoroutine(FinishPlayer1Placement());
         }
         else if (currentState == GameState.Player2Placement)
         {
-            player2Board.HideShips();
-
-            currentState = GameState.PassToPlayer1;
-
-            gameUI.ShowPassPhonePanel(
-                "Player 2 has finished placing ships.\n\n" +
-                "Exchange your physical board markers.\n\n" +
-                "Pass the phone back to Player 1.\n\n" +
-                "Press Continue to begin the battle."
-            );
-
-            Debug.Log("Waiting to begin the battle.");
+            StartCoroutine(FinishPlayer2Placement());
         }
+    }
+
+    private IEnumerator FinishPlayer1Placement()
+    {
+        placementTransitionInProgress = true;
+        currentState = GameState.PassToPlayer2;
+
+        gameUI.ShowPassPhonePanel(
+            "Player 1 has placed all ships.\n\n" +
+            "Pass the phone to Player 2 in 3..."
+        );
+
+        yield return new WaitForSeconds(1f);
+
+        gameUI.SetPassMessage(
+            "Player 1 has placed all ships.\n\n" +
+            "Pass the phone to Player 2 in 2..."
+        );
+
+        yield return new WaitForSeconds(1f);
+
+        gameUI.SetPassMessage(
+            "Player 1 has placed all ships.\n\n" +
+            "Pass the phone to Player 2 in 1..."
+        );
+
+        yield return new WaitForSeconds(1f);
+
+        player1Board.HideShips();
+
+        gameUI.SetPassMessage(
+            "Player 1's ships are now hidden.\n\n" +
+            "Pass the phone to Player 2.\n\n" +
+            "When Player 2 is ready, press Continue."
+        );
+
+        placementTransitionInProgress = false;
+    }
+
+    private IEnumerator FinishPlayer2Placement()
+    {
+        placementTransitionInProgress = true;
+        currentState = GameState.PassToPlayer1;
+
+        gameUI.ShowPassPhonePanel(
+            "Player 2 has placed all ships.\n\n" +
+            "The battle begins in 3..."
+        );
+
+        yield return new WaitForSeconds(1f);
+
+        gameUI.SetPassMessage(
+            "Player 2 has placed all ships.\n\n" +
+            "The battle begins in 2..."
+        );
+
+        yield return new WaitForSeconds(1f);
+
+        gameUI.SetPassMessage(
+            "Player 2 has placed all ships.\n\n" +
+            "The battle begins in 1..."
+        );
+
+        yield return new WaitForSeconds(1f);
+
+        player2Board.HideShips();
+
+        gameUI.SetPassMessage(
+            "Both players' ships are hidden.\n\n" +
+            "Exchange your physical board markers.\n\n" +
+            "Pass the phone back to Player 1.\n\n" +
+            "Press Continue to begin the battle."
+        );
+
+        placementTransitionInProgress = false;
     }
 
     public ShotResult ShootForCurrentPlayer(string coordinate)
@@ -195,6 +278,25 @@ public class GameManager : MonoBehaviour
 
         ShotResult result = defendingPlayer.board.Shoot(coordinate);
 
+        if (result == ShotResult.Hit)
+        {
+            gameUI.SetFeedback("Hit at " + coordinate + "!");
+        }
+        else if (result == ShotResult.Miss)
+        {
+            gameUI.SetFeedback("Miss at " + coordinate + ".");
+        }
+        else if (result == ShotResult.AlreadyShot)
+        {
+            gameUI.SetFeedback(
+                coordinate + " was already targeted. Choose another cell."
+            );
+        }
+        else
+        {
+            gameUI.SetFeedback("That shot could not be made.");
+        }
+
         Debug.Log(
             attackingPlayer.playerName +
             " fired at " +
@@ -217,33 +319,63 @@ public class GameManager : MonoBehaviour
 
         if (result == ShotResult.Hit || result == ShotResult.Miss)
         {
-            SwitchTurn();
+            SwitchTurn(result, coordinate);
         }
 
         return result;
     }
 
-    private void SwitchTurn()
+    private void SwitchTurn(ShotResult result, string coordinate)
     {
+        string resultMessage =
+            result == ShotResult.Hit
+            ? "Hit at " + coordinate + "!"
+            : "Miss at " + coordinate + ".";
+
         if (currentState == GameState.Player1Turn)
         {
             currentState = GameState.Player2Turn;
-            Debug.Log("Player 2's turn.");
+
+            gameUI.SetPhaseTitle("PLAYER 2 TURN");
+            gameUI.SetFeedback(
+                resultMessage +
+                "\nPlayer 2: choose a coordinate on Player 1's board."
+            );
         }
         else if (currentState == GameState.Player2Turn)
         {
             currentState = GameState.Player1Turn;
-            Debug.Log("Player 1's turn.");
+
+            gameUI.SetPhaseTitle("PLAYER 1 TURN");
+            gameUI.SetFeedback(
+                resultMessage +
+                "\nPlayer 1: choose a coordinate on Player 2's board."
+            );
         }
     }
 
     public void ContinueAfterPass()
     {
+        if (placementTransitionInProgress)
+        {
+            Debug.LogWarning("Please wait for the countdown to finish.");
+            return;
+        }
         if (currentState == GameState.PassToPlayer2)
         {
             currentState = GameState.Player2Placement;
 
             gameUI.HidePassPhonePanel();
+
+            gameUI.SetPhaseTitle("PLAYER 2 PLACEMENT");
+
+            gameUI.SetFeedback(
+                "Place your " +
+                GetCurrentShipName() +
+                " (size " +
+                GetCurrentShipSize() +
+                ")."
+            );
 
             Debug.Log("Player 2 can now place ships.");
         }
@@ -253,8 +385,10 @@ public class GameManager : MonoBehaviour
 
             gameUI.HidePassPhonePanel();
 
+            gameUI.SetPhaseTitle("PLAYER 1 TURN");
+            gameUI.SetFeedback("Choose a coordinate and shoot.");
+
             Debug.Log("Placement finished. Player 1 starts.");
-            Debug.Log("Player 1 should scan Player 2's marker.");
         }
         else
         {

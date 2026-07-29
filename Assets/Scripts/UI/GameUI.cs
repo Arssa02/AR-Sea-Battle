@@ -9,6 +9,8 @@ public class GameUI : MonoBehaviour
     public GameObject passPhonePanel;
 
     public TMP_Text passMessage;
+    public TMP_Text phaseTitle;
+    public TMP_Text feedbackText;
 
     public void ShowPassPhonePanel(string message)
     {
@@ -28,4 +30,21 @@ public class GameUI : MonoBehaviour
     {
         gameManager.ContinueAfterPass();
     }
+
+    public void SetPassMessage(string message)
+    {
+        passMessage.text = message;
+    }
+
+    public void SetPhaseTitle(string title)
+    {
+        phaseTitle.text = title;
+    }
+
+    public void SetFeedback(string message)
+    {
+        feedbackText.text = message;
+    }
+
+
 }
