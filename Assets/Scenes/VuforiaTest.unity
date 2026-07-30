@@ -2503,7 +2503,7 @@ MonoBehaviour:
   PreviewVisible: 1
   RuntimeOcclusion: 0
   RuntimeCollider: 0
-  mTrackableName: marker_2_v3
+  mTrackableName: marker_2_v4
   mInitializedInEditor: 1
   mDataSetPath: Vuforia/SeaBattleDatabase.xml
   mAspectRatio: 1
@@ -2566,7 +2566,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Vuforia.Unity.Engine.dll::Vuforia.ImageTargetPreview
   mObserverBehaviour: {fileID: 786557312}
   mHiddenRoot: {fileID: 0}
-  mTargetName: marker_2_v3
+  mTargetName: marker_2_v4
   mDatasetName: Vuforia/SeaBattleDatabase.xml
   mCastedBehaviour: {fileID: 786557312}
   mMeshFilter: {fileID: 0}
