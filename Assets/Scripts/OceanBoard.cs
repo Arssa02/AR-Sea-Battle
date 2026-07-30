@@ -8,6 +8,8 @@ public class OceanBoard : MonoBehaviour
 
     public GameObject labelPrefab;
 
+    public GameObject hitEffectPrefab;
+    public GameObject missEffectPrefab;
     public float cellSpacing = 0.1f;
 
     public int size = 5;
@@ -120,30 +122,30 @@ public class OceanBoard : MonoBehaviour
     string labelText,
     Vector3 position,
     string objectName)
-{
-    GameObject labelObject = Instantiate(
-        labelPrefab,
-        position,
-        Quaternion.Euler(90f, 0f, 0f),
-        transform
-    );
-
-    labelObject.name = objectName;
-
-    TMP_Text textComponent =
-        labelObject.GetComponent<TMP_Text>();
-
-    if (textComponent != null)
     {
-        textComponent.text = labelText;
-    }
-    else
-    {
-        Debug.LogError(
-            "Label prefab does not contain a TMP_Text component."
+        GameObject labelObject = Instantiate(
+            labelPrefab,
+            position,
+            Quaternion.Euler(90f, 0f, 0f),
+            transform
         );
+
+        labelObject.name = objectName;
+
+        TMP_Text textComponent =
+            labelObject.GetComponent<TMP_Text>();
+
+        if (textComponent != null)
+        {
+            textComponent.text = labelText;
+        }
+        else
+        {
+            Debug.LogError(
+                "Label prefab does not contain a TMP_Text component."
+            );
+        }
     }
-}
 
     public Cell GetCell(string coordinate)
     {
@@ -262,6 +264,8 @@ public class OceanBoard : MonoBehaviour
             cell.isHit = true;
             cell.SetHit();
 
+            SpawnEffect(hitEffectPrefab, cell);
+
             DamageShipAtCell(cell);
 
             return ShotResult.Hit;
@@ -269,7 +273,27 @@ public class OceanBoard : MonoBehaviour
 
         cell.SetMiss();
 
+        SpawnEffect(missEffectPrefab, cell);
+
         return ShotResult.Miss;
+    }
+
+    private void SpawnEffect(GameObject effectPrefab, Cell cell)
+    {
+        if (effectPrefab == null || cell == null)
+        {
+            return;
+        }
+
+        Vector3 effectPosition =
+            cell.transform.position +
+            cell.transform.up * 0.01f;
+
+        Instantiate(
+            effectPrefab,
+            effectPosition,
+            cell.transform.rotation
+        );
     }
 
     private void DamageShipAtCell(Cell hitCell)
