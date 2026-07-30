@@ -16,9 +16,6 @@ public class GameManager : MonoBehaviour
     private int currentShipIndex = 0;
     private bool placementTransitionInProgress = false;
 
-    [SerializeField]
-    private float finalShipDisplayDelay = 3f;
-
     private readonly string[] shipNames =
     {
         "Destroyer",
@@ -118,12 +115,22 @@ public class GameManager : MonoBehaviour
             return false;
         }
 
-        return currentPlayer.board.PlaceShip(
+
+
+        bool placed = currentPlayer.board.PlaceShip(
             startCoordinate,
             direction,
             shipSize,
             shipName
         );
+
+        if (placed)
+        {
+            AudioManager.Instance.PlayPlace();
+        }
+
+        return placed;
+
     }
     public int GetCurrentShipSize()
     {
@@ -281,25 +288,23 @@ public class GameManager : MonoBehaviour
 
         ShotResult result = defendingPlayer.board.Shoot(coordinate);
 
-        string sunkShipName = defendingPlayer.board.LastSunkShipName;
+        string sunkShipName =
+            defendingPlayer.board.LastSunkShipName;
 
-        if (result == ShotResult.Hit)
-        {
-            gameUI.SetFeedback("Hit at " + coordinate + "!");
-        }
-        else if (result == ShotResult.Miss)
-        {
-            gameUI.SetFeedback("Miss at " + coordinate + ".");
-        }
-        else if (result == ShotResult.AlreadyShot)
+        if (result == ShotResult.AlreadyShot)
         {
             gameUI.SetFeedback(
-                coordinate + " was already targeted. Choose another cell."
+                coordinate +
+                " was already targeted. Choose another cell."
             );
+
+            return result;
         }
-        else
+
+        if (result == ShotResult.Invalid)
         {
             gameUI.SetFeedback("That shot could not be made.");
+            return result;
         }
 
         Debug.Log(
@@ -310,28 +315,36 @@ public class GameManager : MonoBehaviour
             result
         );
 
-        if (result == ShotResult.Hit)
+        if (result == ShotResult.Hit &&
+            defendingPlayer.AllShipsSunk())
         {
-            if (defendingPlayer.AllShipsSunk())
-            {
-                currentState = GameState.GameOver;
+            currentState = GameState.GameOver;
 
-                gameUI.ShowGameOver(attackingPlayer.playerName);
+            gameUI.ShowGameOver(attackingPlayer.playerName);
+            AudioManager.Instance.PlayVictory();
 
-                Debug.Log(attackingPlayer.playerName + " wins!");
+            Debug.Log(attackingPlayer.playerName + " wins!");
 
-                return result;
-            }
+            return result;
         }
 
-        if (result == ShotResult.Hit || result == ShotResult.Miss)
+        if (!string.IsNullOrEmpty(sunkShipName))
         {
-            SwitchTurn(result, coordinate, sunkShipName);
+            AudioManager.Instance.PlaySunk();
         }
+        else if (result == ShotResult.Hit)
+        {
+            AudioManager.Instance.PlayHit();
+        }
+        else if (result == ShotResult.Miss)
+        {
+            AudioManager.Instance.PlayMiss();
+        }
+
+        SwitchTurn(result, coordinate, sunkShipName);
 
         return result;
     }
-
     private void SwitchTurn(ShotResult result, string coordinate, string sunkShipName)
     {
         string resultMessage;
