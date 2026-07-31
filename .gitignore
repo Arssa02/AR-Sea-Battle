@@ -48,3 +48,6 @@ Assets/Editor/Migration/*.tgz.meta
 # Temporary recovery folders
 Library_backup/
 vuforia_extract/
+
+~$*
+*.tmp
