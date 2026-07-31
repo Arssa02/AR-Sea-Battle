@@ -6,10 +6,12 @@ public class OceanBoard : MonoBehaviour
 {
     public GameObject cellPrefab;
 
+    public GameObject oceanBasePrefab;
     public GameObject labelPrefab;
 
     public GameObject hitEffectPrefab;
     public GameObject missEffectPrefab;
+
     public float cellSpacing = 0.1f;
 
     public int size = 5;
@@ -29,12 +31,32 @@ public class OceanBoard : MonoBehaviour
 
         cells = new Cell[size, size];
 
+        CreateOceanBase();
         CreateGrid();
         CreateLabels();
-
+    
         boardCreated = true;
     }
 
+    private void CreateOceanBase()
+    {
+        if (oceanBasePrefab == null)
+        {
+            return;
+        }
+
+        GameObject oceanBase = Instantiate(
+            oceanBasePrefab,
+            transform
+        );
+
+        oceanBase.name = "OceanBase";
+        oceanBase.transform.localPosition =
+            new Vector3(0f, -0.005f, 0f);
+
+        oceanBase.transform.localRotation =
+            Quaternion.identity;
+    }
 
     void CreateGrid()
     {

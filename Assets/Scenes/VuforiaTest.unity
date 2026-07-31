@@ -2543,6 +2543,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OceanBoard
   cellPrefab: {fileID: 3043276372733120725, guid: 8593d0f9b96fee74d908a84c5875182f, type: 3}
+  oceanBasePrefab: {fileID: 7984906801154979636, guid: d24eed217646a9f47b706f5c33627704, type: 3}
   labelPrefab: {fileID: 447151842}
   hitEffectPrefab: {fileID: 8005251638235688306, guid: b0a76efe1ee8bc2458d53ee6795be0de, type: 3}
   missEffectPrefab: {fileID: 8005251638235688306, guid: a1b420d2719b82c4ab010570b36f0dfe, type: 3}
@@ -5691,6 +5692,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OceanBoard
   cellPrefab: {fileID: 3043276372733120725, guid: 8593d0f9b96fee74d908a84c5875182f, type: 3}
+  oceanBasePrefab: {fileID: 7984906801154979636, guid: d24eed217646a9f47b706f5c33627704, type: 3}
   labelPrefab: {fileID: 896951021267231477, guid: bc15fee6293e9ce4cbcbbfd23f5fe742, type: 3}
   hitEffectPrefab: {fileID: 8005251638235688306, guid: b0a76efe1ee8bc2458d53ee6795be0de, type: 3}
   missEffectPrefab: {fileID: 8005251638235688306, guid: a1b420d2719b82c4ab010570b36f0dfe, type: 3}
