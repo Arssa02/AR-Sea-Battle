@@ -43,7 +43,7 @@ The application was developed as the final project for the **Augmented Reality**
 
 1. Copy **ARSeaBattle.apk** to your Android phone.
 2. Install the application.
-3. Allow camera permission when requested.
+3. Allow camera permission if requested.
 4. Print or display both image markers.
 5. Launch the application.
 
