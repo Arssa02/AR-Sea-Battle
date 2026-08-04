@@ -24,8 +24,7 @@ public class OceanBoard : MonoBehaviour
 
     public string LastSunkShipName { get; private set; }
 
-    public void InitializeBoard()
-    {
+    public void InitializeBoard() {
         if (boardCreated)
             return;
 
@@ -38,10 +37,8 @@ public class OceanBoard : MonoBehaviour
         boardCreated = true;
     }
 
-    private void CreateOceanBase()
-    {
-        if (oceanBasePrefab == null)
-        {
+    private void CreateOceanBase() {
+        if (oceanBasePrefab == null) {
             return;
         }
 
@@ -51,31 +48,23 @@ public class OceanBoard : MonoBehaviour
         );
 
         oceanBase.name = "OceanBase";
-        oceanBase.transform.localPosition =
-            new Vector3(0f, -0.005f, 0f);
+        oceanBase.transform.localPosition = new Vector3(0f, -0.005f, 0f);
 
-        oceanBase.transform.localRotation =
-            Quaternion.identity;
+        oceanBase.transform.localRotation = Quaternion.identity;
     }
 
-    void CreateGrid()
-    {
-        for (int row = 0; row < size; row++)
-        {
-            for (int col = 0; col < size; col++)
-            {
+    void CreateGrid() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
                 float offset = (size - 1) * cellSpacing / 2f;
 
                 Vector3 position = new Vector3(
                     col * cellSpacing - offset,
                     0,
                     -row * cellSpacing + offset
-
                 );
 
-
-                GameObject cellObject =
-                    Instantiate(
+                GameObject cellObject = Instantiate(
                         cellPrefab,
                         position,
                         Quaternion.identity,
@@ -83,31 +72,23 @@ public class OceanBoard : MonoBehaviour
                     );
 
 
-                string coordinate =
-                    ((char)('A' + row)).ToString()
-                    + (col + 1);
+                string coordinate = ((char)('A' + row)).ToString() + (col + 1);
 
-
-                Cell cell =
-                    cellObject.GetComponent<Cell>();
-
+                Cell cell = cellObject.GetComponent<Cell>();
 
                 cell.SetCoordinate(coordinate);
-
 
                 cells[row, col] = cell;
             }
         }
     }
 
-    private void CreateLabels()
-    {
+    private void CreateLabels() {
         float offset = (size - 1) * cellSpacing / 2f;
         float labelDistance = cellSpacing * 0.75f;
 
-        // Numbers above columns
-        for (int col = 0; col < size; col++)
-        {
+        // numbers above columns
+        for (int col = 0; col < size; col++) {
             Vector3 position = new Vector3(
                 col * cellSpacing - offset,
                 0.01f,
@@ -121,7 +102,7 @@ public class OceanBoard : MonoBehaviour
             );
         }
 
-        // Letters to the left of rows
+        // letters to the left of rows
         for (int row = 0; row < size; row++)
         {
             string letter = ((char)('A' + row)).ToString();
@@ -143,8 +124,7 @@ public class OceanBoard : MonoBehaviour
     private void CreateLabel(
     string labelText,
     Vector3 position,
-    string objectName)
-    {
+    string objectName) {
         GameObject labelObject = Instantiate(
             labelPrefab,
             position,
@@ -154,32 +134,23 @@ public class OceanBoard : MonoBehaviour
 
         labelObject.name = objectName;
 
-        TMP_Text textComponent =
-            labelObject.GetComponent<TMP_Text>();
+        TMP_Text textComponent = labelObject.GetComponent<TMP_Text>();
 
-        if (textComponent != null)
-        {
+        if (textComponent != null) {
             textComponent.text = labelText;
         }
-        else
-        {
-            Debug.LogError(
-                "Label prefab does not contain a TMP_Text component."
-            );
+        else {
+            Debug.LogError("Label prefab does not contain a TMP_Text component.");
         }
     }
 
-    public Cell GetCell(string coordinate)
-    {
-        if (cells == null)
-        {
+    public Cell GetCell(string coordinate) {
+        if (cells == null) {
             return null;
         }
 
-        foreach (Cell cell in cells)
-        {
-            if (cell.coordinate == coordinate)
-            {
+        foreach (Cell cell in cells) {
+            if (cell.coordinate == coordinate) {
                 return cell;
             }
         }
@@ -188,101 +159,75 @@ public class OceanBoard : MonoBehaviour
     }
 
 
-    public bool PlaceShip(string startCoordinate, Direction direction, int shipSize, string shipName)
-    {
+    public bool PlaceShip(string startCoordinate, Direction direction, int shipSize, string shipName) {
         Cell startCell = GetCell(startCoordinate);
 
-        if (startCell == null)
-        {
+        if (startCell == null) {
             return false;
         }
 
-
         List<Cell> shipCells = new List<Cell>();
-
 
         int startRow = startCoordinate[0] - 'A';
         int startCol = int.Parse(startCoordinate[1].ToString()) - 1;
 
-
-        for (int i = 0; i < shipSize; i++)
-        {
+        for (int i = 0; i < shipSize; i++) {
             int row = startRow;
             int col = startCol;
 
-
-            if (direction == Direction.Horizontal)
-            {
+            if (direction == Direction.Horizontal) {
                 col += i;
             }
-            else
-            {
+            else {
                 row += i;
             }
 
-
-            if (row >= size || col >= size)
-            {
+            if (row >= size || col >= size) {
                 return false;
             }
-
 
             Cell cell = cells[row, col];
 
-
-            if (cell.hasShip)
-            {
+            if (cell.hasShip) {
                 return false;
             }
-
 
             shipCells.Add(cell);
         }
 
 
-        foreach (Cell cell in shipCells)
-        {
+        foreach (Cell cell in shipCells) {
             cell.SetShip();
         }
 
-
-        Ship ship = new Ship(
-            shipName,
-            shipSize
-        );
+        Ship ship = new Ship(shipName,shipSize);
 
         ship.positions = shipCells;
 
-
-        if (player != null)
-        {
+        if (player != null) {
             player.ships.Add(ship);
         }
 
         return true;
     }
 
-    public ShotResult Shoot(string coordinate)
-    {
+    public ShotResult Shoot(string coordinate) {
 
         LastSunkShipName = null;
 
         Cell cell = GetCell(coordinate);
 
-        if (cell == null)
-        {
+        if (cell == null) {
             return ShotResult.Invalid;
         }
 
-        if (cell.alreadyShot)
-        {
+        if (cell.alreadyShot) {
             return ShotResult.AlreadyShot;
         }
 
         cell.alreadyShot = true;
 
-        if (cell.hasShip)
-        {
+        if (cell.hasShip) {
             cell.isHit = true;
             cell.SetHit();
 
@@ -300,16 +245,12 @@ public class OceanBoard : MonoBehaviour
         return ShotResult.Miss;
     }
 
-    private void SpawnEffect(GameObject effectPrefab, Cell cell)
-    {
-        if (effectPrefab == null || cell == null)
-        {
+    private void SpawnEffect(GameObject effectPrefab, Cell cell) {
+        if (effectPrefab == null || cell == null) {
             return;
         }
 
-        Vector3 effectPosition =
-            cell.transform.position +
-            cell.transform.up * 0.01f;
+        Vector3 effectPosition = cell.transform.position + cell.transform.up * 0.01f;
 
         Instantiate(
             effectPrefab,
@@ -318,23 +259,17 @@ public class OceanBoard : MonoBehaviour
         );
     }
 
-    private void DamageShipAtCell(Cell hitCell)
-    {
-        if (player == null)
-        {
+    private void DamageShipAtCell(Cell hitCell) {
+        if (player == null) {
             return;
         }
 
-        foreach (Ship ship in player.ships)
-        {
-            if (ship.positions.Contains(hitCell))
-            {
+        foreach (Ship ship in player.ships) {
+            if (ship.positions.Contains(hitCell)) {
                 ship.health--;
 
-                if (ship.IsSunk())
-                {
+                if (ship.IsSunk()) {
                     LastSunkShipName = ship.shipName;
-
                     Debug.Log(ship.shipName + " was sunk.");
                 }
 
@@ -345,36 +280,28 @@ public class OceanBoard : MonoBehaviour
 
 
 
-    public bool IsInitialized
-    {
-        get
-        {
+    public bool IsInitialized {
+        get {
             return boardCreated && cells != null;
         }
     }
 
-    public void ShowShips()
-    {
-        if (cells == null)
-        {
+    public void ShowShips() {
+        if (cells == null) {
             return;
         }
 
-        foreach (Cell cell in cells)
-        {
+        foreach (Cell cell in cells) {
             cell.ShowShip();
         }
     }
 
-    public void HideShips()
-    {
-        if (cells == null)
-        {
+    public void HideShips() {
+        if (cells == null) {
             return;
         }
 
-        foreach (Cell cell in cells)
-        {
+        foreach (Cell cell in cells) {
             cell.HideShip();
         }
     }

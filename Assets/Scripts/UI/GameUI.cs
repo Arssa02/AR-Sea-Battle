@@ -4,57 +4,45 @@ using UnityEngine;
 public class GameUI : MonoBehaviour
 {
     public GameManager gameManager;
-
     public GameObject placementPanel;
     public GameObject passPhonePanel;
-
     public TMP_Text passMessage;
     public TMP_Text phaseTitle;
     public TMP_Text feedbackText;
-
     public GameObject gameOverPanel;
     public TMP_Text winnerText;
-
     public GameObject directionDropdown;
     public GameObject placeButton;
     public GameObject shootButton;
-    public void ShowPassPhonePanel(string message)
-    {
+    public void ShowPassPhonePanel(string message) {
         passMessage.text = message;
 
         placementPanel.SetActive(false);
         passPhonePanel.SetActive(true);
     }
 
-    public void HidePassPhonePanel()
-    {
+    public void HidePassPhonePanel() {
         passPhonePanel.SetActive(false);
         placementPanel.SetActive(true);
     }
 
-    public void ContinueGame()
-    {
+    public void ContinueGame() {
         gameManager.ContinueAfterPass();
     }
 
-    public void SetPassMessage(string message)
-    {
+    public void SetPassMessage(string message) {
         passMessage.text = message;
     }
 
-    public void SetPhaseTitle(string title)
-    {
+    public void SetPhaseTitle(string title) {
         phaseTitle.text = title;
     }
 
-    public void SetFeedback(string message)
-    {
+    public void SetFeedback(string message) {
         feedbackText.text = message;
     }
 
-    public void ShowGameOver(string winnerName)
-    {
-
+    public void ShowGameOver(string winnerName) {
         HideActionControls();
 
         placementPanel.SetActive(false);
@@ -64,15 +52,13 @@ public class GameUI : MonoBehaviour
         winnerText.text = winnerName + " WINS!";
     }
 
-    public void ShowPlacementControls()
-    {
+    public void ShowPlacementControls() {
         directionDropdown.SetActive(true);
         placeButton.SetActive(true);
         shootButton.SetActive(false);
     }
 
-    public void ShowBattleControls()
-    {
+    public void ShowBattleControls() {
         Debug.Log("Switching UI to battle controls");
         
         directionDropdown.SetActive(false);
@@ -80,12 +66,10 @@ public class GameUI : MonoBehaviour
         shootButton.SetActive(true);
     }
 
-    public void HideActionControls()
-    {
+    public void HideActionControls() {
         directionDropdown.SetActive(false);
         placeButton.SetActive(false);
         shootButton.SetActive(false);
     }
-
 
 }

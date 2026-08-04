@@ -9,29 +9,21 @@ public class PlacementUI : MonoBehaviour
 
     public GameManager gameManager;
 
-    public void PlaceShip()
-    {
+    public void PlaceShip() {
         string coordinate =
             letterDropdown.options[letterDropdown.value].text +
             numberDropdown.options[numberDropdown.value].text;
 
-        Direction direction =
-            directionDropdown.value == 0
-            ? Direction.Horizontal
-            : Direction.Vertical;
+        Direction direction = directionDropdown.value == 0 ? Direction.Horizontal : Direction.Vertical;
 
-
-        bool placed =
-            gameManager.PlaceShipForCurrentPlayer(
+        bool placed = gameManager.PlaceShipForCurrentPlayer(
                 coordinate,
                 direction,
                 gameManager.GetCurrentShipSize(),
                 gameManager.GetCurrentShipName()
             );
 
-
-        if (placed)
-        {
+        if (placed) {
             gameManager.NextShip();
         }
 
@@ -39,14 +31,12 @@ public class PlacementUI : MonoBehaviour
         Debug.Log("Ship placed: " + placed);
     }
 
-    public void Shoot()
-    {
+    public void Shoot() {
         string coordinate =
             letterDropdown.options[letterDropdown.value].text +
             numberDropdown.options[numberDropdown.value].text;
 
-        ShotResult result =
-            gameManager.ShootForCurrentPlayer(coordinate);
+        ShotResult result = gameManager.ShootForCurrentPlayer(coordinate);
 
         Debug.Log("Shot result: " + result);
     }

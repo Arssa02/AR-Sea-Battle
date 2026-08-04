@@ -16,27 +16,23 @@ public class GameManager : MonoBehaviour
     private int currentShipIndex = 0;
     private bool placementTransitionInProgress = false;
 
-    private readonly string[] shipNames =
-    {
+    private readonly string[] shipNames = {
         "Destroyer",
         "Patrol Boat"
     };
 
-    private readonly int[] shipSizes =
-    {
+    private readonly int[] shipSizes = {
         3,
         2
     };
 
 
-    void Start()
-    {
+    void Start() {
         InitializeGame();
     }
 
 
-    void InitializeGame()
-    {
+    void InitializeGame() {
         player1 = new Player("Player 1");
         player2 = new Player("Player 2");
 
@@ -49,7 +45,6 @@ public class GameManager : MonoBehaviour
         player2Board.player = player2;
 
         currentState = GameState.Player1Placement;
-
 
         Debug.Log("Game started");
         Debug.Log(currentState);
@@ -76,46 +71,31 @@ public class GameManager : MonoBehaviour
     {
         Player currentPlayer;
 
-        if (placementTransitionInProgress)
-        {
+        if (placementTransitionInProgress) {
             Debug.LogWarning("Please wait for the placement phase to finish.");
             return false;
         }
 
-        if (currentState == GameState.Player1Placement)
-        {
+        if (currentState == GameState.Player1Placement) {
             currentPlayer = player1;
         }
-        else if (currentState == GameState.Player2Placement)
-        {
+        else if (currentState == GameState.Player2Placement) {
             currentPlayer = player2;
         }
-        else
-        {
-            Debug.LogWarning(
-                "Ships cannot be placed during state: " + currentState
-            );
-
+        else {
+            Debug.LogWarning("Ships cannot be placed during state: " + currentState);
             return false;
         }
 
-        if (currentPlayer == null || currentPlayer.board == null)
-        {
+        if (currentPlayer == null || currentPlayer.board == null) {
             Debug.LogError("Current player or board is not configured.");
             return false;
         }
 
-        if (!currentPlayer.board.IsInitialized)
-        {
-            Debug.LogWarning(
-                currentPlayer.playerName +
-                "'s marker must be scanned before placing a ship."
-            );
-
+        if (!currentPlayer.board.IsInitialized) {
+            Debug.LogWarning(currentPlayer.playerName + "'s marker must be scanned before placing a ship.");
             return false;
         }
-
-
 
         bool placed = currentPlayer.board.PlaceShip(
             startCoordinate,
@@ -124,76 +104,51 @@ public class GameManager : MonoBehaviour
             shipName
         );
 
-        if (placed)
-        {
+        if (placed) {
             AudioManager.Instance.PlayPlace();
         }
 
         return placed;
 
     }
-    public int GetCurrentShipSize()
-    {
+    public int GetCurrentShipSize() {
         return shipSizes[currentShipIndex];
     }
 
-    public string GetCurrentShipName()
-    {
+    public string GetCurrentShipName() {
         return shipNames[currentShipIndex];
-
     }
-    public void NextShip()
-    {
+    public void NextShip() {
         currentShipIndex++;
 
-        if (currentShipIndex < shipSizes.Length)
-        {
-            gameUI.SetFeedback(
-                "Place your " +
-                GetCurrentShipName() +
-                " (size " +
-                GetCurrentShipSize() +
-                ")."
-            );
-
+        if (currentShipIndex < shipSizes.Length) {
+            gameUI.SetFeedback("Place your " + GetCurrentShipName() + " (size " + GetCurrentShipSize() + ").");
             return;
         }
 
         currentShipIndex = 0;
 
-        if (currentState == GameState.Player1Placement)
-        {
+        if (currentState == GameState.Player1Placement) {
             StartCoroutine(FinishPlayer1Placement());
         }
-        else if (currentState == GameState.Player2Placement)
-        {
+        else if (currentState == GameState.Player2Placement) {
             StartCoroutine(FinishPlayer2Placement());
         }
     }
 
-    private IEnumerator FinishPlayer1Placement()
-    {
+    private IEnumerator FinishPlayer1Placement() {
         placementTransitionInProgress = true;
         currentState = GameState.PassToPlayer2;
 
-        gameUI.ShowPassPhonePanel(
-            "Player 1 has placed all ships.\n\n" +
-            "Pass the phone to Player 2 in 3..."
-        );
+        gameUI.ShowPassPhonePanel("Player 1 has placed all ships.\n\n" + "Pass the phone to Player 2 in 3...");
 
         yield return new WaitForSeconds(1f);
 
-        gameUI.SetPassMessage(
-            "Player 1 has placed all ships.\n\n" +
-            "Pass the phone to Player 2 in 2..."
-        );
+        gameUI.SetPassMessage("Player 1 has placed all ships.\n\n" + "Pass the phone to Player 2 in 2...");
 
         yield return new WaitForSeconds(1f);
 
-        gameUI.SetPassMessage(
-            "Player 1 has placed all ships.\n\n" +
-            "Pass the phone to Player 2 in 1..."
-        );
+        gameUI.SetPassMessage("Player 1 has placed all ships.\n\n" + "Pass the phone to Player 2 in 1...");
 
         yield return new WaitForSeconds(1f);
 
@@ -208,29 +163,19 @@ public class GameManager : MonoBehaviour
         placementTransitionInProgress = false;
     }
 
-    private IEnumerator FinishPlayer2Placement()
-    {
+    private IEnumerator FinishPlayer2Placement() {
         placementTransitionInProgress = true;
         currentState = GameState.PassToPlayer1;
 
-        gameUI.ShowPassPhonePanel(
-            "Player 2 has placed all ships.\n\n" +
-            "The battle begins in 3..."
-        );
+        gameUI.ShowPassPhonePanel("Player 2 has placed all ships.\n\n" + "The battle begins in 3...");
 
         yield return new WaitForSeconds(1f);
 
-        gameUI.SetPassMessage(
-            "Player 2 has placed all ships.\n\n" +
-            "The battle begins in 2..."
-        );
+        gameUI.SetPassMessage("Player 2 has placed all ships.\n\n" + "The battle begins in 2...");
 
         yield return new WaitForSeconds(1f);
 
-        gameUI.SetPassMessage(
-            "Player 2 has placed all ships.\n\n" +
-            "The battle begins in 1..."
-        );
+        gameUI.SetPassMessage("Player 2 has placed all ships.\n\n" + "The battle begins in 1...");
 
         yield return new WaitForSeconds(1f);
 
@@ -246,78 +191,52 @@ public class GameManager : MonoBehaviour
         placementTransitionInProgress = false;
     }
 
-    public ShotResult ShootForCurrentPlayer(string coordinate)
-    {
+    public ShotResult ShootForCurrentPlayer(string coordinate) {
         Player attackingPlayer;
         Player defendingPlayer;
 
-        if (currentState == GameState.Player1Turn)
-        {
+        if (currentState == GameState.Player1Turn) {
             attackingPlayer = player1;
             defendingPlayer = player2;
         }
-        else if (currentState == GameState.Player2Turn)
-        {
+        else if (currentState == GameState.Player2Turn) {
             attackingPlayer = player2;
             defendingPlayer = player1;
         }
-        else
-        {
-            Debug.LogWarning(
-                "A shot cannot be made during state: " + currentState
-            );
+        else {
+            Debug.LogWarning("A shot cannot be made during state: " + currentState);
 
             return ShotResult.Invalid;
         }
 
-        if (defendingPlayer == null || defendingPlayer.board == null)
-        {
+        if (defendingPlayer == null || defendingPlayer.board == null) {
             Debug.LogError("Defending player or board is not configured.");
             return ShotResult.Invalid;
         }
 
-        if (!defendingPlayer.board.IsInitialized)
-        {
-            Debug.LogWarning(
-                defendingPlayer.playerName +
-                "'s marker must be scanned before shooting."
-            );
-
+        if (!defendingPlayer.board.IsInitialized) {
+            Debug.LogWarning(defendingPlayer.playerName +"'s marker must be scanned before shooting.");
             return ShotResult.Invalid;
         }
 
         ShotResult result = defendingPlayer.board.Shoot(coordinate);
 
-        string sunkShipName =
-            defendingPlayer.board.LastSunkShipName;
+        string sunkShipName = defendingPlayer.board.LastSunkShipName;
 
-        if (result == ShotResult.AlreadyShot)
-        {
-            gameUI.SetFeedback(
-                coordinate +
-                " was already targeted. Choose another cell."
-            );
-
+        if (result == ShotResult.AlreadyShot) {
+            gameUI.SetFeedback(coordinate + " was already targeted. Choose another cell.");
             return result;
         }
 
-        if (result == ShotResult.Invalid)
-        {
+        if (result == ShotResult.Invalid) {
             gameUI.SetFeedback("That shot could not be made.");
             return result;
         }
 
-        Debug.Log(
-            attackingPlayer.playerName +
-            " fired at " +
-            coordinate +
-            ": " +
-            result
-        );
+        Debug.Log(attackingPlayer.playerName + " fired at " + coordinate + ": " + result);
 
         if (result == ShotResult.Hit &&
-            defendingPlayer.AllShipsSunk())
-        {
+            defendingPlayer.AllShipsSunk()) {
             currentState = GameState.GameOver;
 
             gameUI.ShowGameOver(attackingPlayer.playerName);
@@ -328,16 +247,13 @@ public class GameManager : MonoBehaviour
             return result;
         }
 
-        if (!string.IsNullOrEmpty(sunkShipName))
-        {
+        if (!string.IsNullOrEmpty(sunkShipName)) {
             AudioManager.Instance.PlaySunk();
         }
-        else if (result == ShotResult.Hit)
-        {
+        else if (result == ShotResult.Hit) {
             AudioManager.Instance.PlayHit();
         }
-        else if (result == ShotResult.Miss)
-        {
+        else if (result == ShotResult.Miss) {
             AudioManager.Instance.PlayMiss();
         }
 
@@ -345,25 +261,17 @@ public class GameManager : MonoBehaviour
 
         return result;
     }
-    private void SwitchTurn(ShotResult result, string coordinate, string sunkShipName)
-    {
+    private void SwitchTurn(ShotResult result, string coordinate, string sunkShipName) {
         string resultMessage;
 
-        if (!string.IsNullOrEmpty(sunkShipName))
-        {
-            resultMessage =
-                "Hit at " +
-                coordinate +
-                "!\n" +
-                sunkShipName +
-                " sunk!";
+        if (!string.IsNullOrEmpty(sunkShipName)) {
+            resultMessage = "Hit at " + coordinate + "!\n" +
+                sunkShipName + " sunk!";
         }
-        else if (result == ShotResult.Hit)
-        {
+        else if (result == ShotResult.Hit) {
             resultMessage = "Hit at " + coordinate + "!";
         }
-        else
-        {
+        else {
             resultMessage = "Miss at " + coordinate + ".";
         }
 
@@ -372,32 +280,23 @@ public class GameManager : MonoBehaviour
             currentState = GameState.Player2Turn;
 
             gameUI.SetPhaseTitle("PLAYER 2 TURN");
-            gameUI.SetFeedback(
-                resultMessage +
-                "\nPlayer 2: choose a coordinate on Player 1's board."
+            gameUI.SetFeedback(resultMessage + "\nPlayer 2: choose a coordinate on Player 1's board."
             );
         }
-        else if (currentState == GameState.Player2Turn)
-        {
+        else if (currentState == GameState.Player2Turn) {
             currentState = GameState.Player1Turn;
 
             gameUI.SetPhaseTitle("PLAYER 1 TURN");
-            gameUI.SetFeedback(
-                resultMessage +
-                "\nPlayer 1: choose a coordinate on Player 2's board."
-            );
+            gameUI.SetFeedback( resultMessage + "\nPlayer 1: choose a coordinate on Player 2's board.");
         }
     }
 
-    public void ContinueAfterPass()
-    {
-        if (placementTransitionInProgress)
-        {
+    public void ContinueAfterPass() {
+        if (placementTransitionInProgress) {
             Debug.LogWarning("Please wait for the countdown to finish.");
             return;
         }
-        if (currentState == GameState.PassToPlayer2)
-        {
+        if (currentState == GameState.PassToPlayer2) {
             currentState = GameState.Player2Placement;
 
             gameUI.HidePassPhonePanel();
@@ -405,18 +304,11 @@ public class GameManager : MonoBehaviour
 
             gameUI.SetPhaseTitle("PLAYER 2 PLACEMENT");
 
-            gameUI.SetFeedback(
-                "Place your " +
-                GetCurrentShipName() +
-                " (size " +
-                GetCurrentShipSize() +
-                ")."
-            );
+            gameUI.SetFeedback("Place your " + GetCurrentShipName() + " (size " + GetCurrentShipSize() + ").");
 
             Debug.Log("Player 2 can now place ships.");
         }
-        else if (currentState == GameState.PassToPlayer1)
-        {
+        else if (currentState == GameState.PassToPlayer1) {
             currentState = GameState.Player1Turn;
 
             gameUI.HidePassPhonePanel();
@@ -427,19 +319,13 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("Placement finished. Player 1 starts.");
         }
-        else
-        {
-            Debug.LogWarning(
-                "Continue cannot be used during state: " + currentState
-            );
+        else {
+            Debug.LogWarning("Continue cannot be used during state: " + currentState);
         }
     }
 
-    public void RestartGame()
-    {
-        SceneManager.LoadScene(
-            SceneManager.GetActiveScene().buildIndex
-        );
+    public void RestartGame() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 }

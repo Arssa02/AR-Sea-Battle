@@ -12,20 +12,15 @@ public class Ship
     public int health;
 
 
-    public Ship(string name, int shipSize)
-    {
+    public Ship(string name, int shipSize) {
         shipName = name;
-
         size = shipSize;
-
         health = shipSize;
-
         positions = new List<Cell>();
     }
 
 
-    public bool IsSunk()
-    {
+    public bool IsSunk() {
         return health <= 0;
     }
 }
